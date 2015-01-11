@@ -1,0 +1,6 @@
+.sf-alert {
+    position: fixed;
+    height: 500px;
+    width: 500px;
+    background: blue;
+}
