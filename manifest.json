@@ -3,20 +3,20 @@
 
     "name": "Stay Focused",
     "description": "Helps you to set a task and get it done. Reminds you if you lost focus and haven't done it yet.",
-    "version": "1.0",
+    "version": "1.0.0",
 
     "browser_action": {
         "default_icon": "icon.jpg",
         "default_popup": "popup.html"
     },
     "background": {
-        "page": "background.html"
+        "scripts": ["background.js"]
     },
     "content_scripts": [
         {
             "matches": ["http://*/*", "https://*/*"],
             "css": ["application.css"],
-            "js": ["utils.js"]
+            "js": ["alert.js"]
         }
     ],
     "permissions": [

@@ -1,6 +1,27 @@
 .sf-alert {
     position: fixed;
-    height: 500px;
-    width: 500px;
-    background: blue;
+    z-index: 100001;
+    top: 50%;
+    left: 50%;
+    transform: translate3d(-50%, -50%, 0);
+    height: 250px;
+    width: 400px;
+    padding: 20px;
+    box-sizing: border-box;
+    background: #fff;
+}
+.sf-alert-mask {
+    position: fixed;
+    z-index: 100000;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0,0,0,.3);
+}
+.sf-btn {
+    margin-right: 20px;
+    padding: 5px 20px;
+    border-radius: 5px;
+    border: none;
 }
