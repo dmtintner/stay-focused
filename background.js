@@ -1,5 +1,13 @@
 var TaskCreator = {
-    safeToCreateNewTask: true,
+    defaults: {
+        delay: .1
+    },
+
+    init: function(){
+        console.log('init');
+        // clear any alarms that might have been left from old browser session
+        chrome.alarms.clearAll();
+    },
 
     /*
      * @param alarmName {string}
@@ -8,16 +16,11 @@ var TaskCreator = {
     createAlarm: function(alarmName, alarmInfo){
         if (!alarmInfo){
             alarmInfo = {
-                delayInMinutes:.01 // wont be less than a minute in prod. env.
+                delayInMinutes: this.defaults.delay // wont be less than a minute in prod. env.
             };
         }
 
         chrome.alarms.create(alarmName, alarmInfo);
-
-        // TODO set counter to update badge text
-        /*chrome.browserAction.setBadgeText({
-               text: json.Count.toString()
-           });*/
     },
 
     sendMessageToContentScript: function(info){
@@ -26,6 +29,13 @@ var TaskCreator = {
         });
     }
 };
+
+// TODO check for current browsing tab every time new tab is opened
+// if it is facebook then open popup
+
+// TODO on install, open popup asking which sites you'd like to auto detect
+
+// TODO create options popup that allows you to change sites you are autodetecting
 
 // events
 chrome.alarms.onAlarm.addListener(function(alarm){
@@ -39,3 +49,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         sendResponse({success: true});
     }
 });
+
+// Start it up
+TaskCreator.init();
