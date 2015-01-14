@@ -1,8 +1,7 @@
 var Alert = {
     defaults: {
         alertId: 'sfAlert',
-        alertMaskId: 'sfAlertMask',
-        blurClass: 'is-blurred'
+        alertMaskId: 'sfAlertMask'
     },
 
     createElementWithContent: function(elementType, id, classname, innerHtml) {
@@ -19,13 +18,13 @@ var Alert = {
         return obj;
     },
 
-    appendAlert: function(message){
+    appendAlert: function(taskName) {
         // create Alert
         var _this = this,
             d = this.defaults,
             body = document.body,
             alertContent = '<h1>Time\'s up!</h1>' +
-                '<p>Did you ' + message + '?</p>' +
+                '<p>Did you ' + taskName + '?</p>' +
                 '<button id="alert-btn-yes" class="sf-btn" type="button">Yes</button>' +
                 '<button id="alert-btn-no" class="sf-btn" type="button">No, Snooze 5 more minutes</button>',
             alert = this.createElementWithContent('div', d.alertId, 'sf-alert', alertContent),
@@ -35,32 +34,16 @@ var Alert = {
         body.appendChild(alert);
         body.appendChild(alertMask);
 
-        // add is-blurred class to body
-        //body.classList.add(d.blurClass);
-
         // event listeners for buttons
         document.getElementById('alert-btn-yes').addEventListener('click', function(e) {
-            _this.closeAlert();
+            _this.closeAlert("delete", taskName);
         });
         document.getElementById('alert-btn-no').addEventListener('click', function(e) {
-            _this.sendSnoozeMessage(message);
+            _this.closeAlert("create", taskName);
         });
     },
 
-    sendSnoozeMessage: function(message){
-        var _this = this;
-
-        chrome.runtime.sendMessage({ taskName: message }, function(resp){
-            if (resp.success){
-                _this.closeAlert();
-            } else {
-                console.log('error snoozing alarm');
-                // todo append message to say 'try again'
-            }
-        });
-    },
-
-    closeAlert: function(){
+    closeAlert: function(actionToTake, taskName) {
         var d = this.defaults,
             body = document.body,
             alert = document.getElementById(d.alertId),
@@ -69,9 +52,7 @@ var Alert = {
         // must go to parent first in order to remove el in native js
         body.removeChild(alert);
         body.removeChild(alertMask);
-
-        // remove is-blurred class on body
-        //document.body.classList.remove(d.blurClass);
+        chrome.runtime.sendMessage({ action: actionToTake, taskName: taskName });
     }
 };
 
