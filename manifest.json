@@ -1,12 +1,14 @@
 {
     "manifest_version": 2,
 
-    "name": "Stay Focused",
+    "name": "Aloni says: Stay Focused!",
     "description": "Helps you stay focued and increase productivity. Set a task and reminds you if haven't done it yet.",
     "version": "1.0.0",
 
     "browser_action": {
-        "default_popup": "popup.html"
+        "default_popup": "popup.html",
+        "default_icon": "sf-icon.png"
+
     },
     "background": {
         "scripts": ["background.js"]

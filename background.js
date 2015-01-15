@@ -1,6 +1,6 @@
 var TaskCreator = {
     defaults: {
-        delay: 2
+        delay: .4
     },
 
     init: function(){
