@@ -24,10 +24,10 @@ var Alert = {
         var _this = this,
             d = this.defaults,
             body = document.body,
-            alertContent = '<h1>Time\'s up!</h1>' +
+            alertContent = '<h1>Bam! Time\'s up.</h1>' +
                 '<p>Did you ' + taskName + '?</p>' +
-                '<button id="alert-btn-yes" class="sf-btn" type="button">Yes</button>' +
-                '<button id="alert-btn-no" class="sf-btn" type="button">No, Snooze 5 more minutes</button>',
+                '<button id="alert-btn-yes" class="sf-btn" type="button">Hell Yeah</button>' +
+                '<button id="alert-btn-no" class="sf-btn" type="button">Sh*t! Snooze for 5 more mins please</button>',
             alert = this.createElementWithContent('div', d.alertId, 'sf-alert', alertContent),
             alertMask = this.createElementWithContent('div', d.alertMaskId, 'sf-alert-mask');
 

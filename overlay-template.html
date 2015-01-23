@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Stay Focused</title>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,600,400' rel='stylesheet' type='text/css'>
+   <link rel="stylesheet" href="application.css" type="text/css">
+</head>
+<body id="stayFocusedPopup">
+
+    <div id="currentTasks"></div>
+    <div id="overlay-wrapper">
+    <form id="stayFocusedForm">
+        <label for="taskName">
+            <h2>
+            Ok Sagi, focus.
+            </h2>
+
+<!--            <span class="taskPreText">I need to </span>-->
+            <input class="taskName" id="taskName" type="text" />
+            <span class="placeholdertxt">I came here to </span>
+        </label>
+        <button id="taskCreatorSubmit" type="submit">Ok, Go!</button>
+    </form>
+    </div> 
+    <div style="background:url('fbscreenshot.jpg') no-repeat top left; position:fixed;z-index:1; width:100%;height:100%; -webkit-filter:blur(3px);z-index:0; "></div>
+
+</body>
+    
+<!--
+      - JavaScript and HTML must be in separate files: see our Content Security
+      - Policy documentation[1] for details and explanation.
+      -
+      - [1]: http://developer.chrome.com/extensions/contentSecurityPolicy.html
+     -->
+<script src="popup.js"></script>
+
+</html>
+

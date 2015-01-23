@@ -6,7 +6,9 @@
     "version": "1.0.0",
 
     "browser_action": {
-        "default_popup": "popup.html"
+        "default_popup": "popup.html",
+        "default_icon": "sf-icon.png"
+
     },
     "background": {
         "scripts": ["background.js"]
