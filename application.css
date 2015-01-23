@@ -1,10 +1,5 @@
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:400,300,600);
- body {
-    color: #fff;
-    font-size: 14px;
-    font-family: 'Open Sans', Arial, sans-serif;
-    font-weight: 300;
-}
+
 .sf-alert {
     position: fixed;
     z-index: 100001;
@@ -56,18 +51,16 @@
     color: #d1225f;
     margin-left: 5px;
 }
+
 h1 {
     font-family: 'Open Sans', Arial, sans-serif;
     font-weight: 300;
     color: #728cc9;
     margin: 0 0 10px 0;
 }
-/* Overlay Styles */
 
-body {
-    min-width: 340px;
-    overflow-x: hidden;
-}
+/* Form Styles */
+
 h2 {
     font-family: 'Open Sans', Arial, sans-serif;
     font-weight: 300;
@@ -76,6 +69,7 @@ h2 {
     text-align: left;
     margin-bottom: 10px;
 }
+
 #taskName {
     height: 38px;
     width: 100%;
@@ -104,30 +98,22 @@ h2 {
     margin: 0px;
 }
 #taskCreatorSubmit {
+    position: absolute;
+    top: 70px;
+    right: 0;
     height: 40px;
     width: 70px;
     background: none;
-    /*            border: solid 1px #c5d7ff;*/
     border: none;
     color: #08A824;
-    position: absolute;
-    top: 70px;
-    right: -10px;
-    /*            height: 30px;*/
     font-size: 14px;
     font-weight: 600;
-    /*            border-radius: 15px;*/
-    /*            line-height: 3px;*/
-    /*            padding: 5px 10px;*/
-    display: inline-block;
-    margin-top: 4px;
 }
-
-#taskCreatorSubmit:hover, #taskCreatorSubmit:active  {
+#taskCreatorSubmit:hover, #taskCreatorSubmit:active {
     cursor: pointer;
-/*    border: solid 1px #b7b7b7;*/
-/*    box-shadow: -1px 2px 1px rgba(113, 113, 113, 0.3);*/
-     border: solid 0px none;
+    /*    border: solid 1px #b7b7b7;*/
+    /*    box-shadow: -1px 2px 1px rgba(113, 113, 113, 0.3);*/
+    border: solid 0px none;
     box-shadow: none;
     /*     letter-spacing: 0.05em;*/
     animation-iteration-count: 1;
@@ -142,35 +128,26 @@ h2 {
     animation-name: pulse;
 
 }
-
-
-
 .taskPreText {
     color: #8c95af;
     margin-right: 5px;
 }
-#overlay-wrapper {
-    background-color: rgba(62, 90, 157, 0.8);
-    width: 100%;
-    z-index: 999999;
-    position: fixed;
-    height: 100%;
-}
 #stayFocusedForm {
-    position: fixed;
-    margin-left: -250px;
+    position: absolute;
+    top: 40%;
+    transform: translateY(-50%);
     left: 50%;
-    /*    top:40%;*/
-    bottom: 60%;
-    width: 500px
+    margin-left: -250px;
+    width: 500px;
 }
 .placeholdertxt {
     position: absolute;
-    top: 82px;
+    top: 77px;
     left: 10px;
     font-size: 18px;
     color: #B3B3B3;
 }
+
 .endtask {
     position: fixed;
     /*    top:40%;*/
@@ -179,6 +156,7 @@ h2 {
     left: 50%;
     margin-left: -25%;
 }
+
 #finishedTaskBtn {
     display: block;
     clear: both;
@@ -189,17 +167,14 @@ h2 {
     width: 145px;
     line-height: 18px;
     color: #fff;
-    /*            height: 30px;*/
     font-size: 14px;
     font-weight: 400;
-    /*            border-radius: 15px;*/
-    /*            line-height: 3px;*/
-    /*            padding: 5px 10px;*/
     display: inline-block;
     margin-top: 4px;
     text-decoration: none;
     margin: 23px auto;
 }
+
 #finishedTaskBtn:hover {
     cursor: pointer;
     /*    background: green;*/
@@ -207,6 +182,7 @@ h2 {
     background: rgba(0, 0, 0, 0.1);
     /*    box-shadow: -1px 2px 1px rgba(113, 113, 113, 0.3);*/
 }
+
 #finishedTaskBtn:active {
     /*     letter-spacing: 0.05em;*/
     animation-iteration-count: infinite;
@@ -220,6 +196,7 @@ h2 {
     -webkit-animation-name: pulse;
     animation-name: pulse;
 }
+
 .regtxt {
     color: #fff;
     text-align: center;
@@ -229,14 +206,17 @@ h2 {
     clear: both;
     display: block;
 }
+
 a {
     text-decoration: underline;
     color: white;
 }
+
 a:hover {
     color: rgba(255, 255, 255, 0.5);
     cursor: pointer;
 }
+
 .animated {
     -webkit-animation-duration: .2s;
     animation-duration: .2s;
@@ -245,6 +225,7 @@ a:hover {
     -webkit-animation-timing-function: ease-in;
     animation-timing-function: ease-in;
 }
+
 @-webkit-keyframes pulse {
     0% {
         -webkit-transform: scale(1);
@@ -256,6 +237,7 @@ a:hover {
         -webkit-transform: scale(1);
     }
 }
+
 @keyframes pulse {
     0% {
         transform: scale(1);
@@ -267,16 +249,57 @@ a:hover {
         transform: scale(1);
     }
 }
+
+@keyframes blink {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
 .pulse {
     -webkit-animation-name: pulse;
     animation-name: pulse;
 }
-.success {
-    background: url('greatsuccess.png') no-repeat top center;
-    padding: 150px 0 60px;
 
-    margin-top: 400px;
+.success {
     top: -100px;
+    margin-top: 400px;
+    padding: 150px 0 60px;
+    background: url('greatsuccess.png') no-repeat top center;
     vertical-align: bottom;
-    
+}
+
+
+/* Timer styles */
+#timerWrapper {
+    z-index: 999999;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    padding: 20px;
+    background: rgba(0,0,0,.8);
+    color: #fff;
+}
+
+.sf-alert-wrapper {
+    z-index: 999999;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(62, 90, 157, 0.8);
+    color: #fff;
+    font-size: 14px;
+    font-family: 'Open Sans', Arial, sans-serif;
+    font-weight: 300;
+}
+.sf-alert-content {
+
 }

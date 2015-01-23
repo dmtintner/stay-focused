@@ -1,9 +1,51 @@
 var settings = {
-    blackList: ['hackingui.com']
+    blackList: ['facebook.com'],
+
+    currentHost: '',
+
+    getCurrentHost: function() {
+        return this.currentSite;
+    },
+
+    setCurrentHost: function(url) {
+        this.currentSite = Utils.getHostname(url);
+    }
 };
 
-// TODO use default chrome alarms object and methods instead of doing this work twice
-var TaskCreator = {
+var Utils = {
+    sendMessageToContentScript: function(info) {
+        console.log('message sent', info);
+        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+            chrome.tabs.sendMessage(tabs[0].id, info);
+        });
+    },
+
+    /*
+     * @param url {string}
+     * @returns {Boolean}
+     */
+    isBlackListed: function(url) {
+        // if site exists in url, returns true
+        return settings.blackList.some(function(site, i) {
+            return (url.indexOf(site) > -1);
+        });
+    },
+
+    /*
+    * @returns {string ex. facebook.com}
+    * */
+    getHostname: function(url) {
+        var a = document.createElement('a');
+        a.href = url;
+
+        var host = a.hostname;
+        a = null; // to prevent memory leakage
+
+        return host;
+    }
+};
+
+var Alarms = {
     defaults: {
         delay: .1
     },
@@ -13,51 +55,6 @@ var TaskCreator = {
         chrome.alarms.clearAll();
     },
 
-    /*
-     * {array of objects}
-     */
-    tasks: [],
-
-    getTasks: function() {
-        return this.tasks;
-    },
-
-    setTasks: function(tasks) {
-        this.tasks = tasks;
-    },
-
-    /*
-     * @param task {object}
-     */
-    createTask: function(taskName) {
-        var delay = this.defaults.delay,
-            task = {
-                name: taskName
-                // todo add endTime
-            };
-        this.tasks.push(task);
-        AlarmCreator.create(taskName, { delayInMinutes: delay });
-    },
-
-    /*
-     * @param taskName {string}
-     */
-    deleteTask: function(taskName) {
-        var activeTasks = this.getTasks(),
-            taskIndex;
-
-        activeTasks.forEach(function(task, i) {
-            if (task.name == taskName) {
-                taskIndex = i;
-            }
-        });
-
-        this.setTasks(activeTasks.splice(taskIndex, 1));
-        chrome.alarms.clear(taskName);
-    }
-};
-
-var AlarmCreator = {
     /*
      * @param alarmName {string}
      * @param alarmInfo {object}
@@ -72,95 +69,54 @@ var AlarmCreator = {
         chrome.alarms.create(alarmName, alarmInfo);
     },
 
-    sendMessageToContentScript: function(info) {
-        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-            chrome.tabs.sendMessage(tabs[0].id, info);
-        });
+    remove: function(alarmName) {
+        chrome.alarms.clear(alarmName);
     }
 };
 
-var TabChecker = {
-
-    /*
-    * @param url {string}
-    * @returns {Boolean}
-    */
-    isBlackListed: function(url) {
-        // if site exists in url, returns true
-        return settings.blackList.some(function(site, i) {
-            return (url.indexOf(site) > -1);
-        });
-    },
-
-    sendMessageToContentScript: function(info) {
-        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-            chrome.tabs.sendMessage(tabs[0].id, info);
-        });
-    }
-};
-
+// tab events
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab){
-    if (TabChecker.isBlackListed(tab.url)) {
-        TabChecker.sendMessageToContentScript({tab: tab});
+    if(changeInfo.status == 'complete' && tab.status == 'complete' && tab.url != undefined) {
+        var url = tab.url,
+            oldHost = settings.getCurrentHost(),
+            newHost = Utils.getHostname(url);
+
+        if (newHost != oldHost && Utils.isBlackListed(url)) {
+            settings.setCurrentHost(url);
+            Utils.sendMessageToContentScript({tab: tab});
+        }
     }
 });
-
 chrome.tabs.onCreated.addListener(function(tab) {
-    if (TabChecker.isBlackListed(tab.url)) {
-        TabChecker.sendMessageToContentScript({tab: tab});
+    settings.setCurrentHost(tab.url);
+    if (Utils.isBlackListed(tab.url)) {
+        Utils.sendMessageToContentScript({tab: tab});
     }
 });
-
-
-
 
 // Alarm Goes off
 chrome.alarms.onAlarm.addListener(function(alarm) {
-    // notify alert.js to show alert
-    AlarmCreator.sendMessageToContentScript({alarm: alarm});
+    Utils.sendMessageToContentScript({alarm: alarm});
 });
 
 // Receives Message
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    // alarms can be created from popup.js or from alert.js (on snooze)
+    // alarms can be created from task-creator.js or from alert.js (on snooze)
     var action = request.action,
-        taskName = request.taskName,
-        changedTab = request.changedTab;
-
-    if (changedTab) {
-
-    }
+        taskName = request.taskName;
 
     if (action && taskName) {
         if (action == 'create') {
-            TaskCreator.createTask(taskName);
+            Alarms.create(taskName);
             sendResponse({success: true});
-        } else if (action == 'delete') {
-            TaskCreator.deleteTask(taskName);
+        } else if (action == 'remove') {
+            Alarms.remove(taskName);
             sendResponse({success: true});
         }
     }
 });
 
-
-
-
-// TODO switch to using default chrome alarms object and methods
-/*
-* update the taskCreator to not store tasks there, but just create them
-* create alarms from the popup or content scripts instead of from the background
-*/
-
-
-// TODO Detect current tab
-/*
-* listen for switching of the active tab
-* check if current tab matches one of the sites in the black list
-* if it does match, send a message to the content script
-* add a check in the onMessage listener in alert.js for messages that contain site
-* if message contains a site, open an alert
-* append a template to the alert with a form to create tasks
-*/
+Alarms.init();
 
 // TODO on install, open popup with set up info
 /*
