@@ -2,7 +2,7 @@
     "manifest_version": 2,
 
     "name": "Stay Focused",
-    "description": "Helps you stay focued and increase productivity. Set a task and reminds you if haven't done it yet.",
+    "description": "Helps you stay focused and increase productivity. Set a task and reminds you if haven't done it yet.",
     "version": "1.0.0",
 
     "browser_action": {
@@ -15,7 +15,7 @@
         {
             "matches": ["http://*/*", "https://*/*"],
             "css": ["application.css"],
-            "js": ["alert.js"]
+            "js": ["alert.js", "timer.js"]
         }
     ],
     "permissions": [

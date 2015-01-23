@@ -18,6 +18,7 @@ var Alert = {
         return obj;
     },
 
+    // todo create template for alert html after time is up
     appendAlert: function(taskName) {
         // create Alert
         var _this = this,
@@ -60,6 +61,7 @@ var Alert = {
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     var alarm = request.alarm;
 
+    console.log('received message in alert.js');
     if (alarm && alarm.name) {
         Alert.appendAlert(alarm.name);
     }
