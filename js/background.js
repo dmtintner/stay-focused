@@ -47,7 +47,7 @@ var Utils = {
 
 var Alarms = {
     defaults: {
-        delay: .1
+        delay: 5
     },
 
     init: function(){
@@ -76,6 +76,7 @@ var Alarms = {
 
 // tab events
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab){
+    // only show task creator once for each bad domain
     if(changeInfo.status == 'complete' && tab.status == 'complete' && tab.url != undefined) {
         var url = tab.url,
             oldHost = settings.getCurrentHost(),
@@ -106,13 +107,15 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         taskName = request.taskName;
 
     if (action && taskName) {
-        if (action == 'create') {
-            Alarms.create(taskName);
-            sendResponse({success: true});
-        } else if (action == 'remove') {
-            Alarms.remove(taskName);
-            sendResponse({success: true});
+        switch (action) {
+            case 'create':
+                Alarms.create(taskName);
+                break;
+            case 'remove':
+                Alarms.remove(taskName);
+                break;
         }
+        sendResponse({success: true});
     }
 });
 

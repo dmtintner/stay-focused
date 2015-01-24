@@ -10,13 +10,13 @@
         "default_icon": "sf-icon.png"
     },
     "background": {
-        "scripts": ["background.js"]
+        "scripts": ["js/background.js"]
     },
     "content_scripts": [
         {
             "matches": ["http://*/*", "https://*/*"],
             "css": ["application.css"],
-            "js": ["task-creator.js"]
+            "js": ["js/task-creator.js", "js/countdown.js"]
         }
     ],
     "permissions": [

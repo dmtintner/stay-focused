@@ -88,40 +88,45 @@ var Timer = {
         btnCompleteId: 'btnTaskComplete',
         taskNameId: 'timerTaskName',
         counterId: 'timerCounter',
-        time: '5:00'
+        minutes: 5
     },
 
-    templateHTML: function() {
+    templateHTML: function(taskName) {
         var d = this.defaults;
 
         return '<div id="'+ d.timerWrapperId +'">' +
-            '<div id="'+ d.taskNameId +'"></div>' +
-            '<div id="'+ d.counterId +'"s>'+ d.time +'</div>' +
+            '<div id="'+ d.taskNameId +'">'+ taskName +'</div>' +
+            '<div id="'+ d.counterId +'"s></div>' +
             '<button id="btnTaskComplete">I\'m Done, take me out of here</button>' +
         '</div>';
     },
 
-    countdown: function() {
-        var start = this.defaults.time;
+    countdown: function(minutes) {
+        var clock = document.getElementById(this.defaults.counterId),
+            now = new Date(),
+            targetDate = new Date(now.getTime() + minutes * 60000);
 
-        // countdown.js
+        clock.innerHTML = countdown(targetDate).toString();
+        setInterval(function(){
+            clock.innerHTML = countdown(targetDate).toString();
+        }, 1000);
+        // todo clearInterval when canceling timer
     },
 
     appendTimer: function(taskName) {
         var d = this.defaults,
+            _this = this,
             body = document.body,
-            template = this.templateHTML(),
+            template = this.templateHTML(taskName),
             timer = Utils.createElementWithContent('div', d.timerWrapperId, '', template);
 
-        timer.querySelectorAll(d.taskNameId).innerHTML = taskName;
-
         body.appendChild(timer);
+        document.getElementById(d.taskNameId).innerHTML = taskName;
 
         this.countdown();
 
         document.getElementById(d.btnCompleteId).addEventListener('click', function(e) {
-            this.removeTimer();
-            // todo show success alert
+            _this.cancelAlarm(taskName);
         });
     },
 
@@ -132,6 +137,15 @@ var Timer = {
         if (timer) {
             document.body.removeChild(timer);
         }
+    },
+
+    cancelAlarm: function(taskName) {
+        var _this = this;
+        chrome.runtime.sendMessage({ action: 'remove', taskName: taskName }, function(resp) {
+            if (resp.success) {
+                _this.removeTimer();
+            }
+        });
     }
 };
 
@@ -153,12 +167,11 @@ var Alert = {
     appendAlert: function(taskName) {
         var _this = this,
             d = this.defaults,
-            body = document.body,
             template = this.templateHTML(),
             alert = Utils.createElementWithContent('div', d.alertWrapperId, 'sf-alert-wrapper', template);
 
         // Append to body
-        body.appendChild(alert);
+        document.body.appendChild(alert);
 
         // event listeners for buttons
         document.getElementById('alert-btn-yes').addEventListener('click', function(e) {
@@ -167,6 +180,7 @@ var Alert = {
         });
         document.getElementById('alert-btn-no').addEventListener('click', function(e) {
             _this.closeAlert();
+            Timer.appendTimer(taskName);
             chrome.runtime.sendMessage({ action: 'create', taskName: taskName });
         });
     },

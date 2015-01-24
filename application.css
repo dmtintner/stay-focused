@@ -52,23 +52,8 @@
     margin-left: 5px;
 }
 
-h1 {
-    font-family: 'Open Sans', Arial, sans-serif;
-    font-weight: 300;
-    color: #728cc9;
-    margin: 0 0 10px 0;
-}
-
 /* Form Styles */
 
-h2 {
-    font-family: 'Open Sans', Arial, sans-serif;
-    font-weight: 300;
-    color: white;
-    font-size: 27px;
-    text-align: left;
-    margin-bottom: 10px;
-}
 
 #taskName {
     height: 38px;
@@ -207,16 +192,6 @@ h2 {
     display: block;
 }
 
-a {
-    text-decoration: underline;
-    color: white;
-}
-
-a:hover {
-    color: rgba(255, 255, 255, 0.5);
-    cursor: pointer;
-}
-
 .animated {
     -webkit-animation-duration: .2s;
     animation-duration: .2s;
@@ -283,10 +258,14 @@ a:hover {
     bottom: 0;
     left: 0;
     padding: 20px;
-    background: rgba(0,0,0,.8);
+    background: rgba(0,0,0,.65);
     color: #fff;
 }
+#timerCounter {
 
+}
+
+/* Alert Styles */
 .sf-alert-wrapper {
     z-index: 999999;
     position: fixed;
