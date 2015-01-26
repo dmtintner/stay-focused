@@ -1,6 +1,8 @@
 var settings = {
     blackList: ['facebook.com'],
 
+    delayInMinutes: 1,
+
     currentHost: '',
 
     getCurrentHost: function() {
@@ -14,6 +16,7 @@ var settings = {
 
 var Utils = {
     sendMessageToContentScript: function(info) {
+        info.settings = settings;
         console.log('message sent', info);
         chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
             chrome.tabs.sendMessage(tabs[0].id, info);
@@ -46,10 +49,6 @@ var Utils = {
 };
 
 var Alarms = {
-    defaults: {
-        delay: 5
-    },
-
     init: function(){
         // clear any alarms that might have been left from old browser session
         chrome.alarms.clearAll();
@@ -62,7 +61,7 @@ var Alarms = {
     create: function(alarmName, alarmInfo) {
         if (!alarmInfo) {
             alarmInfo = {
-                delayInMinutes: this.defaults.delay // wont be less than a minute in prod. env.
+                delayInMinutes: settings.delayInMinutes // wont be less than a minute in prod. env.
             };
         }
 

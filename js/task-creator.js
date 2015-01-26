@@ -1,6 +1,12 @@
 var Utils = {
-    settings: {
-        contentClass: 'sf-alert-content'
+    settings: {},
+
+    getSettings: function() {
+        return this.settings;
+    },
+
+    setSettings: function(settings) {
+        this.settings = settings;
     },
 
     createElementWithContent: function(elementType, id, classname, innerHtml) {
@@ -22,12 +28,12 @@ var TaskCreator = {
     defaults: {
         formWrapperId: 'taskCreatorPopup',
         formId: 'stayFocusedForm',
-        inputId: 'taskName'
+        inputId: 'taskName',
+        contentClass: 'sf-alert-content'
     },
 
     templateHTML: function() {
-        var u = Utils.settings;
-        return '<div class="'+ u.contentClass +'">' +
+        return '<div class="'+ this.defaults.contentClass +'">' +
             '<form id="stayFocusedForm">' +
             '<h2>Ok, focus.</h2>' +
             '<label class="placeholdertxt" for="taskName">I came here to</label>' +
@@ -76,7 +82,8 @@ var TaskCreator = {
         chrome.runtime.sendMessage({ action: 'create', taskName: taskName }, function(resp) {
             if (resp.success) {
                 _this.removeForm();
-                Timer.appendTimer(taskName);
+                // TODO throw event instead of calling method directly
+                Timer.appendTimer(taskName, Utils.getSettings().delayInMinutes);
             }
         });
     }
@@ -88,7 +95,7 @@ var Timer = {
         btnCompleteId: 'btnTaskComplete',
         taskNameId: 'timerTaskName',
         counterId: 'timerCounter',
-        minutes: 5
+        minutes: 5 // TODO get settings from bg.js
     },
 
     templateHTML: function(taskName) {
@@ -106,14 +113,16 @@ var Timer = {
             now = new Date(),
             targetDate = new Date(now.getTime() + minutes * 60000);
 
-        clock.innerHTML = countdown(targetDate).toString();
+        clock.innerHTML = minutes +':00';
         setInterval(function(){
-            clock.innerHTML = countdown(targetDate).toString();
+            var mm = countdown(targetDate).minutes < 10 ? '0' + countdown(targetDate).minutes : countdown(targetDate).minutes;
+            var ss = countdown(targetDate).seconds < 10 ? '0' + countdown(targetDate).seconds : countdown(targetDate).seconds;
+            clock.innerHTML = mm +':' + ss;
         }, 1000);
         // todo clearInterval when canceling timer
     },
 
-    appendTimer: function(taskName) {
+    appendTimer: function(taskName, minutes) {
         var d = this.defaults,
             _this = this,
             body = document.body,
@@ -123,7 +132,7 @@ var Timer = {
         body.appendChild(timer);
         document.getElementById(d.taskNameId).innerHTML = taskName;
 
-        this.countdown();
+        this.countdown(minutes);
 
         document.getElementById(d.btnCompleteId).addEventListener('click', function(e) {
             _this.cancelAlarm(taskName);
@@ -151,12 +160,12 @@ var Timer = {
 
 var Alert = {
     defaults: {
-        alertWrapperId: 'sfAlertWrapper'
+        alertWrapperId: 'sfAlertWrapper',
+        contentClass: 'sf-alert-content'
     },
 
     templateHTML: function() {
-        var u = Utils.settings;
-        return '<div class="'+ u.contentClass +'">' +
+        return '<div class="'+ this.defaults.contentClass +'">' +
                 '<h1>Bam! Time\'s up.</h1>' +
                 '<p>Did you <span id="alertTaskName"></span> ?</p>' +
                 '<button id="alert-btn-yes" class="sf-btn" type="button">Hell Yeah</button>' +
@@ -193,8 +202,11 @@ var Alert = {
 };
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    var badTab = request.tab,
+    var settings = request.settings,
+        badTab = request.tab,
         alarm = request.alarm;
+
+    Utils.setSettings(settings);
 
     console.log('message received', request);
     if (badTab) {
