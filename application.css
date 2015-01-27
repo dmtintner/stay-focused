@@ -334,7 +334,8 @@
 
 .sf-btnTaskComplete:hover {
     cursor: pointer;
-    background: rgba(0, 0, 0, 0.1);
+    background: rgba(0, 0, 0, 0.05);
+    text-decoration: none;
 }
 
 .sf-btnTaskComplete:active {
