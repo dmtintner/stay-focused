@@ -173,10 +173,10 @@ var Alert = {
         contentClass: 'sf-alert-content'
     },
 
-    templateHTML: function() {
+    templateHTML: function(taskName) {
         return '<div class="'+ this.defaults.contentClass +'">' +
                 '<h1>Bam! Time\'s up.</h1>' +
-                '<p>Did you <span id="alertTaskName"></span> ?</p>' +
+                '<p>Did you <span id="alertTaskName">'+ taskName +'</span> ?</p>' +
                 '<button id="alert-btn-yes" class="sf-btn" type="button">Hell Yeah</button>' +
                 '<button id="alert-btn-no" class="sf-btn" type="button">Sh*t! Snooze for 5 more mins please</button>' +
             '</div>';
@@ -185,7 +185,7 @@ var Alert = {
     appendAlert: function(taskName) {
         var _this = this,
             d = this.defaults,
-            template = this.templateHTML(),
+            template = this.templateHTML(taskName),
             alert = Utils.createElementWithContent('div', d.alertWrapperId, 'sf-alert-wrapper', template);
 
         // Append to body
@@ -198,7 +198,7 @@ var Alert = {
         });
         document.getElementById('alert-btn-no').addEventListener('click', function(e) {
             _this.closeAlert();
-            Timer.appendTimer(taskName);
+            Timer.appendTimer(taskName, Utils.getSettings().delayInMinutes); // todo change this to fire an event instead of explicitly calling method
             chrome.runtime.sendMessage({ action: 'create', taskName: taskName });
         });
     },
