@@ -1,5 +1,26 @@
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:400,300,600);
 
+
+.sf-heading {
+    font-family: 'Open Sans', Arial, sans-serif;
+    font-weight: 300;
+    color: white;
+    font-size: 27px;
+    text-align: left;
+    margin-bottom: 10px;
+}
+
+.sf-placeholdertxt {
+    font-family: 'Open Sans', Arial, sans-serif !important;
+    position: absolute;
+    z-index: 99999;
+    top: 57px;
+    left: 10px;
+    font-size: 18px !important;
+    font-weight: 300;
+    color: #B3B3B3;
+}
+
 .sf-alert {
     position: fixed;
     z-index: 100001;
@@ -13,7 +34,6 @@
     background: #fff;
     font-family: 'Open Sans', Arial, sans-serif;
     font-weight: 300;
-    color: #72grey8cc9;
     border: solid 1px #c1c1c1;
 }
 .sf-alert-mask {
@@ -59,6 +79,7 @@
     height: 38px;
     width: 100%;
     font-size: 18px;
+    font-weight: 300;
     text-indent: 124px;
     position: relative;
     padding: 5px 0 5px 10px;
@@ -84,7 +105,7 @@
 }
 #taskCreatorSubmit {
     position: absolute;
-    top: 70px;
+    top: 51px;
     right: 0;
     height: 40px;
     width: 70px;
@@ -125,24 +146,18 @@
     margin-left: -250px;
     width: 500px;
 }
-.placeholdertxt {
-    position: absolute;
-    top: 77px;
-    left: 10px;
-    font-size: 18px;
-    color: #B3B3B3;
-}
 
-.endtask {
+.sf-alert-content {
     position: fixed;
     /*    top:40%;*/
     bottom: 60%;
     width: 50%;
     left: 50%;
     margin-left: -25%;
+    text-align: center;
 }
 
-#finishedTaskBtn {
+.sf-finishedTaskBtn {
     display: block;
     clear: both;
     background: none;
@@ -160,7 +175,7 @@
     margin: 23px auto;
 }
 
-#finishedTaskBtn:hover {
+.sf-finishedTaskBtn:hover {
     cursor: pointer;
     /*    background: green;*/
     /*    border: solid 2px #b7b7b7;*/
@@ -168,7 +183,7 @@
     /*    box-shadow: -1px 2px 1px rgba(113, 113, 113, 0.3);*/
 }
 
-#finishedTaskBtn:active {
+.sf-finishedTaskBtn:active {
     /*     letter-spacing: 0.05em;*/
     animation-iteration-count: infinite;
     -webkit-animation-iteration-count: infinite;
@@ -182,7 +197,7 @@
     animation-name: pulse;
 }
 
-.regtxt {
+.sf-regtxt {
     color: #fff;
     text-align: center;
     font-size: 14px;
@@ -190,6 +205,11 @@
     width: 100%;
     clear: both;
     display: block;
+}
+
+.sf-finishedTaskLink {
+    text-decoration: underline;
+    color: white;
 }
 
 .animated {
@@ -237,6 +257,32 @@
     }
 }
 
+
+@keyframes fadeout {
+    0% {
+        opacity: 100%;
+    }
+    50% {
+        opacity: 50%;
+    }
+    100% {
+        opacity: 0%;
+    }
+}
+
+@keyframes fadein {
+    0% {
+        opacity: 0%;
+    }
+    50% {
+        opacity: 50%;
+    }
+    100% {
+        opacity: 100%;
+    }
+}
+
+
 .pulse {
     -webkit-animation-name: pulse;
     animation-name: pulse;
@@ -252,18 +298,61 @@
 
 
 /* Timer styles */
-#timerWrapper {
+#sf-timerWrapper {
     z-index: 999999;
     position: fixed;
-    bottom: 0;
-    left: 0;
-    padding: 20px;
-    background: rgba(0,0,0,.65);
-    color: #fff;
+    bottom: 30px;
+    left: 30px;
+    padding: 20px 30px;
+    background: #FFFFFF;
+    box-shadow: 0px 0px 7px rgba(0,0,0,0.1);
+    border: solid 1px rgba(0,0,0,0.2);
+    color: #818181;
+    font-size: 16px;
+    border-radius: 5px;
+    font-weight: 300;
 }
-#timerCounter {
+#sf-timerCounter {
+    font-size: 32px;
+    font-weight: 300;
+}
+
+#sf-timerTaskName {
+    display: block;
+    margin-bottom: 17px;
 
 }
+
+.sf-btnTaskComplete {
+    color: #52AA58;
+    font-size: 14px;
+    margin-top: 11px;
+    border: solid 1px #52AA58;
+    padding: 8px 10px 6px;
+    border-radius: 5px;
+}
+
+.sf-btnTaskComplete:hover {
+    cursor: pointer;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.sf-btnTaskComplete:active {
+    /*     letter-spacing: 0.05em;*/
+    animation-iteration-count: infinite;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-duration: .2s;
+    animation-duration: .2s;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+    -webkit-animation-timing-function: ease-in;
+    animation-timing-function: ease-in;
+    -webkit-animation-name: pulse;
+    animation-name: pulse;
+}
+
+
+
 
 /* Alert Styles */
 .sf-alert-wrapper {

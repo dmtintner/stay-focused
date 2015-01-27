@@ -35,12 +35,12 @@ var TaskCreator = {
     templateHTML: function() {
         return '<div class="'+ this.defaults.contentClass +'">' +
             '<form id="stayFocusedForm">' +
-            '<h2>Ok, focus.</h2>' +
-            '<label class="placeholdertxt" for="taskName">I came here to</label>' +
+            '<div class="sf-heading">Ok, focus.</div>' +
+            '<label class="sf-placeholdertxt" for="taskName">I came here to</label>' +
             '<input class="taskName" id="taskName" type="text" />' +
             '<button id="taskCreatorSubmit" type="submit">Ok, Go!</button>' +
             '</form>' +
-        '</div>';
+            '</div>';
     },
 
     appendForm: function() {
@@ -91,20 +91,20 @@ var TaskCreator = {
 
 var Timer = {
     defaults: {
-        timerWrapperId: 'timerWrapper',
-        btnCompleteId: 'btnTaskComplete',
-        taskNameId: 'timerTaskName',
-        counterId: 'timerCounter'
+        timerWrapperId: 'sf-timerWrapper',
+        btnCompleteId: 'sf-btnTaskComplete',
+        taskNameId: 'sf-timerTaskName',
+        counterId: 'sf-timerCounter'
     },
 
     templateHTML: function(taskName) {
         var d = this.defaults;
 
         return '<div id="'+ d.timerWrapperId +'">' +
-            '<div id="'+ d.taskNameId +'">'+ taskName +'</div>' +
-            '<div id="'+ d.counterId +'"></div>' +
-            '<button id="btnTaskComplete">I\'m Done, take me out of here</button>' +
-        '</div>';
+            'You have<div id="'+ d.counterId +'"></div>' +
+            '<div id="'+ d.taskNameId +'">to '+ taskName +'</div>' +
+            '<a id="btnTaskComplete" class="sf-btnTaskComplete">I\'m done yo!</a>' +
+            '</div>';
     },
 
     intervals: [],
@@ -175,10 +175,9 @@ var Alert = {
 
     templateHTML: function(taskName) {
         return '<div class="'+ this.defaults.contentClass +'">' +
-                '<h1>Bam! Time\'s up.</h1>' +
-                '<p>Did you <span id="alertTaskName">'+ taskName +'</span> ?</p>' +
-                '<button id="alert-btn-yes" class="sf-btn" type="button">Hell Yeah</button>' +
-                '<button id="alert-btn-no" class="sf-btn" type="button">Sh*t! Snooze for 5 more mins please</button>' +
+            '<div class="sf-heading" style="text-align:center;">Bam! Time\'s up. Did you <span id="alertTaskName"></span> ?</div>' +
+            '<a id="alert-btn-yes" class="sf-finishedTaskBtn" type="button">Hell Yeah</a>' +
+            '<div class="sf-regtxt"> <a id="alert-btn-no" class="sf-finishedTaskLink">Sh*t! No! Snooze this task for 5 more mins please</a></div>' +
             '</div>';
     },
 
