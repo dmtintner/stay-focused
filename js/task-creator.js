@@ -94,8 +94,7 @@ var Timer = {
         timerWrapperId: 'timerWrapper',
         btnCompleteId: 'btnTaskComplete',
         taskNameId: 'timerTaskName',
-        counterId: 'timerCounter',
-        minutes: 5 // TODO get settings from bg.js
+        counterId: 'timerCounter'
     },
 
     templateHTML: function(taskName) {
@@ -103,10 +102,12 @@ var Timer = {
 
         return '<div id="'+ d.timerWrapperId +'">' +
             '<div id="'+ d.taskNameId +'">'+ taskName +'</div>' +
-            '<div id="'+ d.counterId +'"s></div>' +
+            '<div id="'+ d.counterId +'"></div>' +
             '<button id="btnTaskComplete">I\'m Done, take me out of here</button>' +
         '</div>';
     },
+
+    intervals: [],
 
     countdown: function(minutes) {
         var clock = document.getElementById(this.defaults.counterId),
@@ -114,12 +115,19 @@ var Timer = {
             targetDate = new Date(now.getTime() + minutes * 60000);
 
         clock.innerHTML = minutes +':00';
-        setInterval(function(){
+        function formatTime() {
             var mm = countdown(targetDate).minutes < 10 ? '0' + countdown(targetDate).minutes : countdown(targetDate).minutes;
             var ss = countdown(targetDate).seconds < 10 ? '0' + countdown(targetDate).seconds : countdown(targetDate).seconds;
             clock.innerHTML = mm +':' + ss;
-        }, 1000);
-        // todo clearInterval when canceling timer
+        }
+        // push interval to intervals array so can clear it later
+        this.intervals.push(setInterval(formatTime, 1000));
+    },
+
+    clearIntervals: function() {
+        while(this.intervals.length > 0) {
+            clearInterval(this.intervals.pop());
+        }
     },
 
     appendTimer: function(taskName, minutes) {
@@ -145,6 +153,7 @@ var Timer = {
         // must go to parent first in order to remove el in native js
         if (timer) {
             document.body.removeChild(timer);
+            this.clearIntervals();
         }
     },
 
