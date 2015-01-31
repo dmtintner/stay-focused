@@ -33,9 +33,10 @@ var TaskCreator = {
     },
 
     templateHTML: function() {
+        var name = Utils.getSettings().name;
         return '<div class="'+ this.defaults.contentClass +'">' +
             '<form id="stayFocusedForm">' +
-            '<div class="sf-heading">Ok, focus.</div>' +
+            '<div class="sf-heading">Ok '+ name +', focus.</div>' +
             '<label class="sf-placeholdertxt" for="taskName">I came here to</label>' +
             '<input class="taskName" id="taskName" type="text" />' +
             '<button id="taskCreatorSubmit" type="submit">Ok, Go!</button>' +
@@ -83,7 +84,7 @@ var TaskCreator = {
             if (resp.success) {
                 _this.removeForm();
                 // TODO throw event instead of calling method directly
-                Timer.appendTimer(taskName, Utils.getSettings().delayInMinutes);
+                Timer.appendTimer(taskName, Utils.getSettings().time);
             }
         });
     }
@@ -138,7 +139,7 @@ var Timer = {
             timer = Utils.createElementWithContent('div', d.timerWrapperId, '', template);
 
         body.appendChild(timer);
-        document.getElementById(d.taskNameId).innerHTML = taskName;
+        //document.getElementById(d.taskNameId).innerHTML = taskName;
 
         this.countdown(minutes);
 
@@ -175,7 +176,7 @@ var Alert = {
 
     templateHTML: function(taskName) {
         return '<div class="'+ this.defaults.contentClass +'">' +
-            '<div class="sf-heading" style="text-align:center;">Bam! Time\'s up. Did you <span id="alertTaskName"></span> ?</div>' +
+            '<div class="sf-heading" style="text-align:center;">Bam! Time\'s up. Did you '+ taskName +' ?</div>' +
             '<a id="alert-btn-yes" class="sf-finishedTaskBtn" type="button">Hell Yeah</a>' +
             '<div class="sf-regtxt"> <a id="alert-btn-no" class="sf-finishedTaskLink">Sh*t! No! Snooze this task for 5 more mins please</a></div>' +
             '</div>';
@@ -197,7 +198,7 @@ var Alert = {
         });
         document.getElementById('alert-btn-no').addEventListener('click', function(e) {
             _this.closeAlert();
-            Timer.appendTimer(taskName, Utils.getSettings().delayInMinutes); // todo change this to fire an event instead of explicitly calling method
+            Timer.appendTimer(taskName, Utils.getSettings().time); // todo change this to fire an event instead of explicitly calling method
             chrome.runtime.sendMessage({ action: 'create', taskName: taskName });
         });
     },
@@ -227,6 +228,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         Alert.appendAlert(alarm.name);
     }
 });
+
 
 // TODO
 // Allow you to minus the timer when it is running so that it is not in the way

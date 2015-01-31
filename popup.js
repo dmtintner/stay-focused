@@ -158,7 +158,7 @@ Popup.defaults.$nameForm.addEventListener('submit', function(e) {
 // Updating the time
 Popup.defaults.$timeForm.addEventListener('submit', function(e) {
     var d = Popup.defaults,
-        time = d.$timeInput.value;
+        time = parseInt(d.$timeInput.value, 10);
 
     e.preventDefault();
     if (!time) {

@@ -1,8 +1,7 @@
 var settings = {
-    blackList: ['facebook.com'],
-
-    delayInMinutes: 1,
-
+    name: '',
+    time: 5,
+    sites: [],
     currentHost: '',
 
     getCurrentHost: function() {
@@ -29,7 +28,7 @@ var Utils = {
      */
     isBlackListed: function(url) {
         // if site exists in url, returns true
-        return settings.blackList.some(function(site, i) {
+        return settings.sites.some(function(site, i) {
             return (url.indexOf(site) > -1);
         });
     },
@@ -52,6 +51,18 @@ var Alarms = {
     init: function(){
         // clear any alarms that might have been left from old browser session
         chrome.alarms.clearAll();
+        chrome.storage.sync.get(null, function(data) {
+            var name = data.name,
+                time = data.time,
+                sites = data.sites;
+            console.log('name: ', name);
+            console.log('time: ', time);
+            console.log('sites: ', sites);
+
+            settings.name = name;
+            settings.time = time;
+            settings.sites = sites;
+        });
     },
 
     /*
@@ -61,7 +72,7 @@ var Alarms = {
     create: function(alarmName, alarmInfo) {
         if (!alarmInfo) {
             alarmInfo = {
-                delayInMinutes: settings.delayInMinutes // wont be less than a minute in prod. env.
+                delayInMinutes: settings.time // wont be less than a minute in prod. env.
             };
         }
 
@@ -99,6 +110,18 @@ chrome.alarms.onAlarm.addListener(function(alarm) {
     Utils.sendMessageToContentScript({alarm: alarm});
 });
 
+// Settings are updated
+chrome.storage.onChanged.addListener(function(changes, storageArea){
+    console.log('settings changed: ', changes);
+    console.log('settings storageArea: ', storageArea);
+    for (var setting in changes) {
+        if(changes.hasOwnProperty(setting)) {
+            console.log("o." + setting + " = " + changes[setting].newValue);
+            settings[setting] = changes[setting].newValue;
+        }
+    }
+});
+
 // Receives Message
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     // alarms can be created from task-creator.js or from alert.js (on snooze)
@@ -112,6 +135,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                 break;
             case 'remove':
                 Alarms.remove(taskName);
+                break;
+            default:
                 break;
         }
         sendResponse({success: true});
