@@ -151,7 +151,7 @@ Popup.defaults.$nameForm.addEventListener('submit', function(e) {
     Popup.setLocalStorage({name: name}, function() {
         Popup.replaceName(name);
     });
-    name = ''; // clear input
+    d.$nameInput.value = ''; // clear input
     return false;
 });
 
@@ -168,7 +168,7 @@ Popup.defaults.$timeForm.addEventListener('submit', function(e) {
     Popup.setLocalStorage({time: time}, function() {
         Popup.replaceTime(time);
     });
-    time = ''; // clear input
+    d.$timeInput.value = ''; // clear input
     return false;
 });
 
@@ -186,7 +186,7 @@ Popup.defaults.$sitesForm.addEventListener('submit', function(e) {
     Popup.setLocalStorage({sites: Popup.getSites()}, function() {
         Popup.appendSite(site);
     });
-    site = ''; // clear input
+    d.$sitesInput.value = ''; // clear input
     return false;
 });
 
