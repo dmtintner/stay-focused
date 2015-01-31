@@ -78,10 +78,19 @@ var Popup = {
      * @returns {DOM element}
      */
     createSiteHtml: function(site) {
-        var listItem = document.createElement('li');
-        listItem.innerHTML = site;
-        // TODO add data attribute
-        // TODO add class
+        var _this = this,
+            listItem = document.createElement('li'),
+            btnClass = 'sf-btnRemoveSite';
+
+        listItem.innerHTML = '<span class="sf-siteName">'+site + '</span>' +
+        '<button class="'+ btnClass +'" type="button">-</button>';
+        listItem.setAttribute('class', 'sf-listItem');
+        listItem.setAttribute('data-site-name', site);
+
+        listItem.querySelector('.' + btnClass).addEventListener('click', function(e) {
+            var site = this.parentNode.dataset.siteName;
+            _this.removeSite(site);
+        });
         return listItem;
     },
 
@@ -108,6 +117,26 @@ var Popup = {
         siteList.innerHTML = ''; // clear old sites first
         this.setSites(sites, true);
         siteList.appendChild(docfrag);
+    },
+
+    removeSite: function(site) {
+        var _this = this;
+
+        this.getLocalStorage('sites', function(data) {
+            var sites = data.sites;
+            sites.some(function(name, i) {
+                if (name == site) {
+                    sites.splice(i, 1);
+                    return true;
+                }
+            });
+            console.log('sites is now: ', sites);
+            var el = document.querySelectorAll('[data-site-name="'+ site +'"')[0];
+            if (el) {
+                _this.setLocalStorage({sites: sites});
+                el.parentNode.removeChild(el);
+            }
+        });
     },
 
     showErrorMessage: function(message) {
@@ -189,6 +218,8 @@ Popup.defaults.$sitesForm.addEventListener('submit', function(e) {
     d.$sitesInput.value = ''; // clear input
     return false;
 });
+
+// removing a site
 
 Popup.init();
 
