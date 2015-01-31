@@ -103,7 +103,7 @@ var Timer = {
         return '<div id="'+ d.timerWrapperId +'">' +
             'You have<div id="'+ d.counterId +'"></div>' +
             '<div id="'+ d.taskNameId +'">to '+ taskName +'</div>' +
-            '<a id="btnTaskComplete" class="sf-btnTaskComplete">I\'m done yo!</a>' +
+            '<a id="'+ d.btnCompleteId +'" class="sf-btnTaskComplete">I\'m done yo!</a>' +
             '</div>';
     },
 
@@ -227,3 +227,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         Alert.appendAlert(alarm.name);
     }
 });
+
+// TODO
+// Allow you to minus the timer when it is running so that it is not in the way

@@ -1,17 +1,54 @@
-var popup = {
+var Popup = {
     defaults: {
-        $popup: document.getElementById('stayFocusedPopup'),
-        $form: document.getElementById('stayFocusedForm'),
-        $name: document.getElementById('taskName'),
-        $currentTasks: document.getElementById('currentTasks'),
-        $cancelBtn: document.getElementsByClassName('js-alarm-cancel')
+        minutes: 5,
+        sites: ['facebook.com'],
+        $form: document.querySelectorAll('.sf-optionsForm'),
+        $nameForm: document.getElementById('sf-optionsNameForm'),
+        $nameInput: document.getElementById('sf-optionsName'),
+        $name: document.getElementById('sf-name'),
+        $timeForm: document.getElementById('sf-optionsTimeForm'),
+        $timeInput: document.getElementById('sf-optionsTime'),
+        $time: document.getElementById('sf-time'),
+        $sitesForm: document.getElementById('sf-optionsSitesForm'),
+        $sitesInput: document.getElementById('sf-optionsSites'),
+        $sitesList: document.getElementById('sf-sitesList')
+    },
+
+    sites: [],
+    getSites: function() {
+        return this.sites;
+    },
+
+    /*
+    * @param sites {array of strings}
+    * @param clearList {boolean} default: false
+    */
+    setSites: function(sites, clearList) {
+        var siteList = this.getSites();
+        if (clearList) {
+            siteList = [];
+        }
+        sites.forEach(function(site, i){
+            siteList.push(site);
+        });
+        this.sites = siteList;
     },
 
     init: function() {
-        console.log('init popup');
-        this.removeAllTasks();
-        this.appendTasks();
-        this.defaults.$name.focus(); // so you can start typing a new task right away
+        var _this = this;
+        // update name
+        this.getLocalStorage(['name', 'time', 'sites'], function(data) {
+            var name = data.name,
+                time = data.time || _this.defaults.minutes,
+                sites = data.sites || _this.defaults.sites;
+
+            console.log('sites: ', sites);
+            if (name) {
+                _this.replaceName(name);
+            }
+            _this.replaceTime(time);
+            _this.updateSites(sites);
+        });
     },
 
     close: function() {
@@ -22,127 +59,137 @@ var popup = {
         window.open();
     },
 
-    createElementWithContent: function(elementType, id, classname, innerHtml) {
-        var obj = document.createElement(elementType);
-        if (id) {
-            obj.setAttribute('id', id);
-        }
-        if ((typeof classname !== 'undefined') && classname && (classname !== '')) {
-            obj.setAttribute('class', classname);
-        }
-        if (innerHtml) {
-            obj.innerHTML = innerHtml;
-        }
-        return obj;
+    /*
+     * @param name {string}
+     */
+    replaceName: function(name) {
+        this.defaults.$name.innerHTML = name;
     },
 
     /*
-    * @returns {DOM element object}
-    */
-    createTaskTemplate: function(alarmName){
-        var newAlarmTemplate = '<div class="alarm-name">'+ alarmName +'</div>' +
-            '<div class="alarm-time">Time: </div>' +
-            '<button class="alarm-btn js-alarm-cancel" data-alarm-name="'+ alarmName +'" type="button">Cancel</button>';
-
-        return this.createElementWithContent('div', '', 'alarm', newAlarmTemplate);
-    },
-
-    appendTimeRemainingToTask: function(time, taskName) {
-        // find task parent element
-        // find child element 'alarm-time'
-        // change text of element to time
-    },
-
-    appendTask: function(taskName) {
-        this.defaults.$currentTasks.appendChild(this.createTaskTemplate(taskName));
-    },
-
-    appendTasks: function() {
-        var _this = this;
-        this.getTasks(function(tasks) {
-            tasks.forEach(function(task, i) {
-                _this.appendTask(tasks[i].name);
-            });
-        });
-    },
-
-    getTasks: function(callback) {
-        chrome.runtime.getBackgroundPage(function(bg){
-            var activeTasks = bg.TaskCreator.getTasks();
-            callback(activeTasks);
-        });
-    },
-
-    removeTask: function(taskName) {
-        var $task = document.querySelectorAll('[data-alarm-name="'+ taskName +'"]')[0].parentElement;
-        this.defaults.$currentTasks.removeChild($task);
-        chrome.runtime.getBackgroundPage(function(bg){
-            bg.TaskCreator.deleteTask(taskName);
-        });
-    },
-
-    removeAllTasks: function() {
-        this.defaults.$currentTasks.innerHTML = '';
-    },
-
-    getTimeRemaining: function(alarmName) {
-        var scheduledTime = alarm.scheduledTime;
-        var now = Date.now();
-        return (scheduledTime - now) / 1000;
+     * @param minutes {integer}
+     */
+    replaceTime: function(minutes) {
+        this.defaults.$time.innerHTML = minutes;
     },
 
     /*
-    * @param alarmName {string}
-    * @returns {string time hh:mm:ss}
-    */
-    formatTimeTilAlarm: function(seconds) {
-        var date = new Date(seconds);
-        var hh = date.getUTCHours();
-        var mm = date.getUTCMinutes();
-        var ss = date.getSeconds();
-
-        // These lines ensure you have two-digits
-        if (hh < 10) {
-            hh = "0"+hh;
-        }
-        if (mm < 10) {
-            mm = "0"+mm;
-        }
-        if (ss < 10) {
-            ss = "0"+ss;
-        }
-        return hh+":"+mm+":"+ss;
+     * @param site {string}
+     * @returns {DOM element}
+     */
+    createSiteHtml: function(site) {
+        var listItem = document.createElement('li');
+        listItem.innerHTML = site;
+        // TODO add data attribute
+        // TODO add class
+        return listItem;
     },
 
-    // TODO create countdown to update time in active alarms
-    countDown: function() {
-        // count down seconds
-        // update alarm
+    /*
+    * @param site {string}
+    */
+    appendSite: function(site) {
+        var el = this.createSiteHtml(site);
+        this.defaults.$sitesList.appendChild(el);
+    },
+
+    /*
+    * @param sites {array of strings}
+    */
+    updateSites: function(sites) {
+        var _this = this,
+            siteList = this.defaults.$sitesList,
+            docfrag = document.createDocumentFragment();
+
+        sites.forEach(function(site, i) {
+            var li = _this.createSiteHtml(site);
+            docfrag.appendChild(li);
+        });
+        siteList.innerHTML = ''; // clear old sites first
+        this.setSites(sites, true);
+        siteList.appendChild(docfrag);
+    },
+
+    showErrorMessage: function(message) {
+        // add message to html
+    },
+
+    setLocalStorage: function(dataObj, callBack) {
+        chrome.storage.sync.set(dataObj, function() {
+            console.log('set', dataObj);
+            if (callBack) {
+                callBack();
+            }
+        });
+    },
+
+    /*
+    * @param data {string key} or {array of keys} or {object}
+    * @param callBack {function}
+    * @returns {object}
+    */
+    getLocalStorage: function(data, callBack) {
+        chrome.storage.sync.get(data, function(a) {
+            console.log('get: ', a);
+            if (callBack) {
+                callBack(a);
+            }
+        });
     }
 };
 
-
-// Events
-popup.defaults.$form.addEventListener('submit', function(e) {
-    var name = popup.defaults.$name.value;
+// Updating the name
+Popup.defaults.$nameForm.addEventListener('submit', function(e) {
+    var d = Popup.defaults,
+        name = d.$nameInput.value;
 
     e.preventDefault();
-    chrome.runtime.sendMessage({action: "create", taskName: name}, function(response) {
-        if (response.success) {
-            console.log('background success creating: ', name);
-            popup.appendTask(name);
-        }
-    });
-});
-
-popup.defaults.$currentTasks.addEventListener('click', function(e) {
-    // attaching event to parent and checking event target because alarm might not be created yet
-    var target = e.target;
-
-    if (target.classList.contains('js-alarm-cancel')) {
-        var alarm = target.dataset.alarmName;
-        popup.removeTask(alarm);
+    if (!name) {
+        Popup.showErrorMessage('Enter a name');
+        return false;
     }
+    Popup.setLocalStorage({name: name}, function() {
+        Popup.replaceName(name);
+    });
+    name = ''; // clear input
+    return false;
 });
 
-popup.init();
+// Updating the time
+Popup.defaults.$timeForm.addEventListener('submit', function(e) {
+    var d = Popup.defaults,
+        time = d.$timeInput.value;
+
+    e.preventDefault();
+    if (!time) {
+        Popup.showErrorMessage('Enter a time');
+        return false;
+    }
+    Popup.setLocalStorage({time: time}, function() {
+        Popup.replaceTime(time);
+    });
+    time = ''; // clear input
+    return false;
+});
+
+// Updating the sites
+Popup.defaults.$sitesForm.addEventListener('submit', function(e) {
+    var d = Popup.defaults,
+        site = d.$sitesInput.value;
+
+    e.preventDefault();
+    if (!site) {
+        Popup.showErrorMessage('Enter a site');
+        return false;
+    }
+    Popup.setSites([site]);
+    Popup.setLocalStorage({sites: Popup.getSites()}, function() {
+        Popup.appendSite(site);
+    });
+    site = ''; // clear input
+    return false;
+});
+
+Popup.init();
+
+// TODO get correct name, time, sites in content script

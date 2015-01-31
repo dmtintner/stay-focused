@@ -4,74 +4,33 @@
 <head>
     <title>Stay Focused</title>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,600,400' rel='stylesheet' type='text/css'>
-    <style>
-        body {
-            min-width: 340px;
-            overflow-x: hidden;
-        }
-        h2 {
-            font-family: 'Open Sans', Arial, sans-serif;
-            font-weight: 300;
-            color: #aeb6c9;
-            margin-bottom: 10px;
-        }
-        #taskName {
-            height: 20px;
-            width: 250px;
-            font-size: 14px;
-            border-radius: 5px;
-            padding: 5px 0 5px 10px;
-            box-shadow: -1px 2px 3px rgba(113, 113, 113, 0.6);
-            border: solid 1px #fdfdfd;
-            position: relative;
-        }
-        #taskName:focus {
-            outline: none;
-            box-shadow: -1px 2px 3px rgba(113, 113, 113, 0.9);
-        }
-        #stayFocusedPopup {
-            width: 420px;
-            font-family: 'Open Sans', Arial, sans-serif;
-            font-size: 16px;
-            text-align: center;
-            padding: 25px;
-        }
-        #taskCreatorSubmit {
-            background: #fff;
-            border: solid 1px #c5d7ff;
-            color: #2b5fb4;
-            height: 30px;
-            font-size: 14px;
-            font-weight: 300;
-            border-radius: 15px;
-            line-height: 3px;
-            padding: 5px 10px;
-            display: inline-block;
-            margin-top: 4px;
-        }
-        #taskCreatorSubmit:hover {
-            cursor: pointer;
-            border: solid 1px #b7b7b7;
-             box-shadow: -1px 2px 1px rgba(113, 113, 113, 0.3);
-        }
-        .taskPreText {
-         color:#8c95af;   
-            margin-right: 5px;
-        }
-    </style>
 </head>
 
-<body id="stayFocusedPopup">
-    <div id="currentTasks"></div>
-    <form id="stayFocusedForm">
-        <label for="taskName">
-            <h2>
-            Focus, focus, focus.
-            </h2>
+<body id="sf-popup">
 
-            <span class="taskPreText">I need to </span><input class="taskName" id="taskName" type="text" placeholder="do what?" />
+    <div id="sf-name">Name not set</div>
+    <form id="sf-optionsNameForm">
+        <label for="sf-optionsName">
+            <span class="sf-label">Name</span>
+            <input id="sf-optionsName" type="text" />
         </label>
-        <button id="taskCreatorSubmit" type="submit">+</button>
+    </form>
+    <div id="sf-time">Time not set</div>
+    <form id="sf-optionsTimeForm">
+        <label for="sf-optionsTime">
+            <span class="sf-label">Minutes per task</span>
+            <input id="sf-optionsTime" type="number" />
+        </label>
+    </form>
+    <h3 class="sf-title">My Site Watch List</h3>
+    <ul id="sf-sitesList">
+        <li class="sf-listItem" data-site-name="facebook.com">Facebook.com</li>
+    </ul>
+    <form id="sf-optionsSitesForm">
+        <label for="sf-optionsSites">
+            <span class="sf-placeholder">ex. twitter.com</span>
+            <input id="sf-optionsSites" type="text" />
+        </label>
     </form>
 </body>
 <!--
@@ -81,6 +40,5 @@
       - [1]: http://developer.chrome.com/extensions/contentSecurityPolicy.html
      -->
 <script src="popup.js"></script>
-
 </html>
 

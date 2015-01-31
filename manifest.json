@@ -21,6 +21,7 @@
     ],
     "permissions": [
         "alarms",
-        "tabs"
+        "tabs",
+        "storage"
     ]
 }
